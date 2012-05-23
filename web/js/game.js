@@ -6,6 +6,7 @@
     {
         game = new mibbu(global.innerWidth, 400);
         game.fps().init();
+        game.level = 0;
         
         //player
         var player = game.spr("img/zero.png", 45, 65, 9);
