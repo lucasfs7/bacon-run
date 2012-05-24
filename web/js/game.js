@@ -7,16 +7,52 @@
         game = new mibbu(global.innerWidth, 400);
         game.fps().init();
         game.level = 0;
+		game.animations = [];
         
         //player
         var player = game.spr("img/pig.png", 105, 80, 7);
         player.position(100, 235, 1).speed(3);
         player.animation(1);
+		player.alive = true;
         player.points = 0;
         player.jump = false;
         player.shield = false;
-        player.shuriken = { sprite: "img/shuriken.png", speed: 3, damage: 10 };
-        player.alive = true;
+        player.shuriken = function()
+		{
+			var damage = 10;
+			var speed = 3;
+			var shuriken = game.spr("img/shuriken.png", 15, 15, 1);
+			
+			var playerPosition = player.position();
+			var playerSize = player.size();
+            var x = playerPosition.x + playerSize.width;
+            var y = playerPosition.y + (playerSize.height / 2);
+			
+			var animationPos = shuriken.position(x, y).speed(speed);
+			animationPos = animationPos - 1;
+			
+			bg.off();
+            player.animation(2);
+            player.callback(function()
+            {
+                bg.on();
+            }, 1);
+			
+			game.animations.push(function()
+			{
+				var shurikenPosition = shuriken.position();
+	            var distanceX = shurikenPosition.x;
+	            var distanceY = shurikenPosition.y;
+	            distanceX = shurikenPosition.x + (2 * shuriken.speed());
+	            shuriken.position(distanceX, distanceY);
+			});
+			
+			shuriken.hit(inimigo, function()
+			{
+				shuriken.animation(1);
+				inimigo.die();
+			});
+		};
         player.die = function()
         {
             if(!player.shield)
@@ -50,6 +86,20 @@
         inimigo.animation(2);
         inimigo.jump = false;
         inimigo.hit(player, player.die);
+		inimigo.moving = function()
+		{
+			var inimigoPosition = inimigo.position();
+            var distanceX = inimigoPosition.x;
+            var distanceY = inimigoPosition.y;
+            distanceX = inimigoPosition.x - (2 * inimigo.speed());
+            inimigo.position(distanceX, distanceY);
+		};
+		game.animations.push(inimigo.moving);
+		inimigo.die = function()
+		{
+			inimigo.animation(3);
+			//inimigo.callback(game.off, 2);
+		};
         
         var keyControll = function(e)
         {
@@ -58,13 +108,7 @@
             if(keyCode == 88 && player.alive)
             {
                 //x
-                player.shield = true;
-                bg.off();
-                player.animation(2);
-                player.callback(function()
-                {
-                    bg.on();
-                }, 1)
+				player.shuriken();
             }
             
             if(keyCode == 32)
@@ -73,26 +117,25 @@
             }
         };
         
-        var animate = function()
-        {
-            var inimigoPosition = inimigo.position();
-            var distanceX = inimigoPosition.x;
-            var distanceY = inimigoPosition.y;
-            
-            distanceX = inimigoPosition.x - (2 * inimigo.speed());
-            
-            inimigo.position(distanceX, distanceY);
-        };
-        
         var stopAnimate = function(e)
         {
-            player.espada = false;
-            player.soco = false;
-            player.animation(1);
+			if(player.alive)
+			{
+				player.animation(1);
+			}
         };
         
         game.on();
-        game.hook(animate);
+        game.hook(function()
+		{
+			if(game.animations && game.animations.length > 0)
+			{
+				for(var i = 0; i < game.animations.length; i++)
+				{
+					game.animations[i]();
+				}
+			}
+		});
         game.hitsOn();
         
         global.addEventListener("keydown", keyControll, false);
