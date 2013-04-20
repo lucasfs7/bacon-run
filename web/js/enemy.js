@@ -6,10 +6,15 @@ var Enemy;
     var enemy = game.spr("img/zero.png", 45, 65, 9);
     enemy.position(global.innerWidth - 45, 250, 1).speed(3);
     enemy.animation(2);
+    enemy.xp = 100;
+    enemy.hp = 10;
+    enemy.dead = false;
 
     enemy.hit(game.player, function() {
       if (!game.player.shield) {
-        game.player.die(enemy);
+        if (!game.player.crying) {
+          game.player.hurt(enemy);
+        }
       } else {
         enemy.die();
       }
@@ -26,6 +31,9 @@ var Enemy;
       if (distanceX <= -(enemy.size().width + 10)) {
         game.animations.splice(0, 1);
         game.enemies.splice(0, 1);
+        if (!enemy.dead) {
+          game.player.increaseXP(enemy.xp);
+        }
       }
     };
 
@@ -33,6 +41,7 @@ var Enemy;
 
     enemy.die = function() {
       enemy.animation(3);
+      enemy.dead = true;
     };
 
     return enemy;

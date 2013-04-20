@@ -4,8 +4,17 @@
   if (mibbu) {
     game = new mibbu(global.innerWidth, 400);
     game.fps().init();
-    game.level = 1;
+    game.nextLevelXP = 400;
     game.animations = [];
+    game.enemies = [];
+    game.enemiesInterval;
+
+    game.startCreatingEnemies = function() {
+      game.enemiesInterval = setTimeout(function() {
+        game.enemies.push(new Enemy(game));
+        game.startCreatingEnemies();
+      }, ((5 / game.player.level) * 1000));
+    };
     
     //player
     game.player = new Player(game);
@@ -15,12 +24,8 @@
     game.scenario.on();
 
     //enemies
-    game.enemies = [];
-
     game.enemies.push(new Enemy(game));
-    setInterval(function() {
-      game.enemies.push(new Enemy(game));
-    }, ((5 / game.level) * 1000));
+    game.startCreatingEnemies();
 
     var keyPressed = function(e) {
       var keyCode = e.keyCode;
