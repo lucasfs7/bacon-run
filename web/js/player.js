@@ -15,17 +15,38 @@ var Player;
     player.isJumping = false;
     player.up = false;
     player.down = true;
-    player.hp = 200;
+    player.maxHP = 200;
+    player.hp = player.maxHP;
     player.level = 1;
     player.xp = 0;
     player.crying = false;
 
+    player.elements = {
+      hpBar: document.getElementById("hp-bar"),
+      statusText: document.getElementById("status-text")
+    };
+
+    player.showStatus = function(value, increased, type) {
+      player.elements.statusText.style.visibility = "visible";
+      player.elements.statusText.innerHTML = (increased ? "+" : "-") + value + type;
+      player.elements.statusText.className = increased ? "increased" : "decreased";
+      setTimeout(function() {
+        player.elements.statusText.style.visibility = "hidden";
+      }, 1000);
+    };
+
     player.increaseXP = function(xp) {
       player.xp += xp;
+      player.showStatus(xp, true, "xp");
       if (player.xp >= game.nextLevelXP) {
         player.level++;
         game.nextLevelXP = game.nextLevelXP * 2;
       }
+    };
+
+    player.decreaseHP = function(hp) {
+      player.hp = player.hp - hp;
+      player.elements.hpBar.style.width = ((player.hp * 100) / player.maxHP) + "%";
     };
 
     player.jumpUp = function() {
@@ -59,7 +80,8 @@ var Player;
 
     player.hurt = function(enemy) {
       player.animation(0);
-      player.hp = player.hp - enemy.hp;
+      player.decreaseHP(enemy.hp);
+      player.showStatus(enemy.hp, false, "HP");
       player.crying = true;
       player.callback(function() {
         if (player.hp <= 0) {
@@ -68,7 +90,7 @@ var Player;
           player.animation(1);
           setTimeout(function() {
             player.crying = false;
-          }, 1000);
+          }, 3000);
         }
       }, 1);
     };

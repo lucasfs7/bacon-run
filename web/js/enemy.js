@@ -31,7 +31,7 @@ var Enemy;
       if (distanceX <= -(enemy.size().width + 10)) {
         game.animations.splice(0, 1);
         game.enemies.splice(0, 1);
-        if (!enemy.dead) {
+        if (enemy.dead) {
           game.player.increaseXP(enemy.xp);
         }
       }
