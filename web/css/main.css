@@ -5,20 +5,21 @@ margin:0; }
 #hp {
   background: red;
   width: 200px;
-  height: 25px;
+  height: 35px;
   position: absolute;
   top: 20px;
   right: 20px;
   z-index: 1;
-  box-shadow: -2px 2px 5px #000;
-  border: 1px solid #666;
+  box-shadow: -2px 2px 2px #000;
+  border: 3px solid #a9ea0d;
+  border-radius: 5px;
   overflow: hidden;
 }
 
 #hp #hp-bar {
   background: #a9ea0d;
-  height: 25px;
-  box-shadow: 0 0 5px #000;
+  height: 35px;
+  box-shadow: inset 0 0 2px #000;
 }
 
 #status-text {

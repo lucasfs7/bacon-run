@@ -5,15 +5,25 @@
     game = new mibbu(global.innerWidth, 400);
     game.fps().init();
     game.nextLevelXP = 400;
-    game.animations = [];
     game.enemies = [];
+    game.enemiesAnimations = [];
     game.enemiesInterval;
+    game.items = [];
+    game.itemsAnimations = [];
+    game.itemsInterval;
 
     game.startCreatingEnemies = function() {
       game.enemiesInterval = setTimeout(function() {
         game.enemies.push(new Enemy(game));
         game.startCreatingEnemies();
       }, ((5 / game.player.level) * 1000));
+    };
+
+    game.startCreatingItems = function() {
+      game.itemsInterval = setTimeout(function() {
+        game.items.push(new Item(game));
+        game.startCreatingItems();
+      }, Math.round(Math.random()*(5 / game.player.level) * 10000));
     };
     
     //player
@@ -26,6 +36,9 @@
     //enemies
     game.enemies.push(new Enemy(game));
     game.startCreatingEnemies();
+
+    // items
+    game.startCreatingItems();
 
     var keyPressed = function(e) {
       var keyCode = e.keyCode;
@@ -61,9 +74,17 @@
     game.on();
 
     game.hook(function() {
-      if (game.animations && game.animations.length > 0) {
-        for (var i = 0; i < game.animations.length; i++) {
-          game.animations[i]();
+      // enimes animation
+      if (game.enemiesAnimations && game.enemiesAnimations.length > 0) {
+        for (var i = 0; i < game.enemiesAnimations.length; i++) {
+          game.enemiesAnimations[i]();
+        }
+      }
+
+      // items animation
+      if (game.itemsAnimations && game.itemsAnimations.length > 0) {
+        for (var i = 0; i < game.itemsAnimations.length; i++) {
+          game.itemsAnimations[i]();
         }
       }
 

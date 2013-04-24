@@ -45,7 +45,20 @@ var Player;
     };
 
     player.decreaseHP = function(hp) {
-      player.hp = player.hp - hp;
+      if (player.hp - hp < 0) {
+        player.hp = 0;
+      } else {
+        player.hp = player.hp - hp;
+      }
+      player.elements.hpBar.style.width = ((player.hp * 100) / player.maxHP) + "%";
+    };
+
+    player.increaseHP = function(hp) {
+      if (player.hp + hp > player.maxHP) {
+        player.hp = player.maxHP;
+      } else {
+        player.hp = player.hp + hp;
+      }
       player.elements.hpBar.style.width = ((player.hp * 100) / player.maxHP) + "%";
     };
 
