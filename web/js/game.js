@@ -1,8 +1,9 @@
+var global = this;
+var Game;
+
 (function() {
-  var global = this;
-  var game;
-  if (mibbu) {
-    game = new mibbu(global.innerWidth, 400);
+  Game = function(resources) {
+    var game = new mibbu(global.innerWidth, 400);
     game.fps().init();
     game.nextLevelXP = 400;
     game.enemies = [];
@@ -102,5 +103,7 @@
     global.addEventListener("keydown", keyPressed, false);
     global.addEventListener("keyup", keyReleased, false);
     global.addEventListener("keyup", stopAnimate, false);
-  }
+
+    return game;
+  };
 }());
