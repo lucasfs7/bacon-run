@@ -8,9 +8,15 @@ var Item;
     item.hp = 30;
 
     item.hit(game.player, function() {
-      game.player.increaseHP(item.hp);
-      game.player.showStatus(item.hp, true, "hp");
-      item.animation(1);
+      if (!game.player.smiling) {
+        game.player.increaseHP(item.hp);
+        game.player.showStatus(item.hp, true, "hp");
+        item.animation(1);
+        game.player.smiling = true;
+        setTimeout(function() {
+          game.player.smiling = false;
+        }, 3000);
+      }
     });
 
     item.moving = function() {

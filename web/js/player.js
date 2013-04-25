@@ -20,6 +20,7 @@ var Player;
     player.level = 1;
     player.xp = 0;
     player.crying = false;
+    player.smiling = false;
 
     player.elements = {
       hpBar: document.getElementById("hp-bar"),
